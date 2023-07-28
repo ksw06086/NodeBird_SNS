@@ -5,6 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks'); // 풀스텍을 원한다면 리액트,뷰로
 const dotenv = require('dotenv');
+const { sequelize } = require('./models'); // 시퀄라이즈 가져오기
 
 dotenv.config(); // process.env를 .env 파일과 연결 및 적용시켜줌
 const pageRouter = require('./routes/page');
@@ -16,6 +17,14 @@ nunjucks.configure('views', {
     express: app,
     watch: true,
 });
+// 개발시 테이블 잘못 만들었다면 sync( { force: true } ) 하면 테이블 다 날라갔다가 다시 생성됨
+sequelize.sync({ force: true })
+    .then(() => {
+        console.log('데이터베이스 연결 성공');
+    })
+    .catch((err) => {
+        console.error(err);
+    })
 
 // dev : 자세하게 log 찍어줌 , 배포시 combined : 자세하지 않음(자세할수록 서버 용량 많이 잡아먹음)
 app.use(morgan('dev')); 
