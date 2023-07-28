@@ -11,5 +11,4 @@ router.post('/login', isNotLoggedIn, login);
 // get  /auth/logout
 router.get('/logout', isLoggedIn, logout);
 
-
 module.exports = router;

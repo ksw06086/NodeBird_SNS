@@ -36,7 +36,7 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // req.body를 ajax json 요청으로부터
 app.use(express.urlencoded({ extended: false })); // req.body 폼으로부터
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(process.env.COOKIE_SECRET)); // { connect.sid: 123456789 } 이렇게 cookieParser가 객체로 만들어줌
 app.use(session({
     resave: false,
     saveUninitialized: false,
@@ -47,8 +47,13 @@ app.use(session({
     }
 }));
 // passport는 무조건 session 아래에
+// 1. passport에서 세션쿠키를 가지고 유저아이디를 찾고 
+// 2. deserializeUser를 실행시켜 req에 user를 저장해서 가지고 다님 
+// 3. 세션쿠키 찾을 때 req.session도 함께 생성됨
+// 4. 그래서 다음부터는 서버 실행시 req.user로 값을 줄 수 있음
 app.use(passport.initialize()); // req.user, req.login, req.isAuthenticated, req.logout
 app.use(passport.session()); // connect.sid라는 이름으로 세션 쿠키가 브라우저로 전송
+// 브라우저 connect.sid=123456789 세션 이렇게 저장됨
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
