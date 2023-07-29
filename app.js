@@ -11,6 +11,7 @@ const { sequelize } = require('./models'); // 시퀄라이즈 가져오기
 dotenv.config(); // process.env를 .env 파일과 연결 및 적용시켜줌
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const passportConfig = require('./passport'); // passport 가져오기
 
 // 미들웨어 설정
@@ -34,6 +35,7 @@ sequelize.sync({ force: true })
 // dev : 자세하게 log 찍어줌 , 배포시 combined : 자세하지 않음(자세할수록 서버 용량 많이 잡아먹음)
 app.use(morgan('dev')); 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/img', express.static(path.join(__dirname, 'uploads'))); // 해당 실행을 /img 경로에서만 실행
 app.use(express.json()); // req.body를 ajax json 요청으로부터
 app.use(express.urlencoded({ extended: false })); // req.body 폼으로부터
 app.use(cookieParser(process.env.COOKIE_SECRET)); // { connect.sid: 123456789 } 이렇게 cookieParser가 객체로 만들어줌
@@ -57,6 +59,7 @@ app.use(passport.session()); // connect.sid라는 이름으로 세션 쿠키가 
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 app.use((req, res, next) => { // 404 Not Found Error
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
