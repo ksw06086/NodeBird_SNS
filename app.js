@@ -12,6 +12,7 @@ dotenv.config(); // process.env를 .env 파일과 연결 및 적용시켜줌
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/post');
+const userRouter = require('./routes/user');
 const passportConfig = require('./passport'); // passport 가져오기
 
 // 미들웨어 설정
@@ -24,7 +25,7 @@ nunjucks.configure('views', {
     watch: true,
 });
 // 개발시 테이블 잘못 만들었다면 sync( { force: true } ) 하면 테이블 다 날라갔다가 다시 생성됨
-sequelize.sync({ force: true })
+sequelize.sync({})
     .then(() => {
         console.log('데이터베이스 연결 성공');
     })
@@ -60,6 +61,7 @@ app.use(passport.session()); // connect.sid라는 이름으로 세션 쿠키가 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/post', postRouter);
+app.use('/user', userRouter);
 
 app.use((req, res, next) => { // 404 Not Found Error
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

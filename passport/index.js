@@ -12,7 +12,21 @@ module.exports = () => {
     // 배포시에는 공유 메모리 저장소를 따로 두어서 그곳에 저장함
 
     passport.deserializeUser((id, done) => {
-        User.findOne({where: {id}})
+        User.findOne({
+                where: {id},
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'nick'],
+                        as: 'Followers',
+                    }, // 팔로잉
+                    {
+                        model: User,
+                        attributes: ['id', 'nick'],
+                        as: 'Followings',
+                    }, // 팔로워
+                ],
+            })
             .then((user) => done(null, user))
             .catch((err) => done(err));
     });
