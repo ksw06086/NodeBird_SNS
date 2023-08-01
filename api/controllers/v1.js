@@ -1,6 +1,6 @@
+const jwt = require('jsonwebtoken');
 const { response } = require("express");
-const Domain = require("../models/domain");
-const User = require("../models/user");
+const { Domain, User } = require("../models");
 
 exports.createToken = async (req, res) => {
     const {clientSecret} = req.body;
