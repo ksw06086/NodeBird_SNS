@@ -11,6 +11,7 @@ const { sequelize } = require('./models'); // 시퀄라이즈 가져오기
 dotenv.config(); // process.env를 .env 파일과 연결 및 적용시켜줌
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
+const v1Router = require('./routes/v1');
 const passportConfig = require('./passport'); // passport 가져오기
 
 // 미들웨어 설정
@@ -57,6 +58,7 @@ app.use(passport.session()); // connect.sid라는 이름으로 세션 쿠키가 
 
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
+app.use('/v1', v1Router);
 
 app.use((req, res, next) => { // 404 Not Found Error
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
