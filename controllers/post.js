@@ -1,3 +1,4 @@
+const User = require('../models/user');
 const Post = require('../models/post');
 const Hashtag = require('../models/hashtag');
 
@@ -34,3 +35,4 @@ exports.uploadPost = async (req, res, next) => {
         next(error);
     }
 }
+

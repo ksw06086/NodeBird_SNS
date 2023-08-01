@@ -2,7 +2,7 @@ const passport = require('passport');
 const local = require('./localStrategy');
 const kakao = require('./kakaoStrategy'); 
 const User = require('../models/user');
-const Post = require('../models/post');
+const Domain = require('../models/domain');
 
 module.exports = () => {
     passport.serializeUser((user, done) => { // user === exUser
@@ -16,7 +16,7 @@ module.exports = () => {
         User.findOne({
                 where: {id},
                 include: [
-                    { model : Post },
+                    { model: Domain }, // 도메인
                     {
                         model: User,
                         attributes: ['id', 'nick'],

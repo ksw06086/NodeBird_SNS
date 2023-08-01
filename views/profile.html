@@ -19,4 +19,34 @@
       {% endif %}
     </div>
   </div>
+  <div class="timeline">
+    <div class="input-group">
+      <label for="join-email">이메일</label>
+      <input id="join-email" type="email" name="email" value="{{user.email}}" readonly></div>
+    <div class="input-group">
+      <label for="join-nick">닉네임</label>
+      <input id="join-nick" type="text" name="nick" value="{{user.nick}}"></div>
+    <button id="join-btn" type="button" class="btn">수정하기</button>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    document.getElementById("join-btn").addEventListener('click', function() {
+      const myId = document.querySelector('#my-id');
+      const formData = new FormData();
+      formData.append('nick', document.getElementById("join-nick").value);
+      if (myId) {
+        if (confirm('닉네임을 수정하시겠습니까?')) {
+          axios.patch('/user/update', formData)
+            .then(() => {
+              location.reload();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      }
+    });
+  </script>
 {% endblock %}

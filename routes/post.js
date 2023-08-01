@@ -4,7 +4,7 @@ const { isLoggedIn, isNotLoggedIn } = require('../middlewares');
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
-const { afterUploadImage, uploadPost } = require('../controllers/post');
+const { afterUploadImage, uploadPost, like, likeCancel } = require('../controllers/post');
 // upload 폴더가 있는지 확인하고 없으면 만들기
 try {
     fs.readdirSync('uploads');

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { renderJoin, renderMain, renderProfile, renderHashtag } = require('../controllers/page');
 const { isLoggedIn, isNotLoggedIn } = require('../middlewares');
+const Post = require('../models/post');
 
 router.use((req, res, next) => {
     res.locals.user = req.user;
