@@ -74,7 +74,7 @@ exports.likeCancel = async (req, res, next) => {
     // req.user.id, req.params.id
     try {
         const user = await User.findOne({ where: {id: req.user.id }});
-        if(post) { // user가 없을 수도 있으니까
+        if(user) { // user가 없을 수도 있으니까
             await user.removeLikePost(parseInt(req.params.id, 10));
             res.send('success');
         } else {

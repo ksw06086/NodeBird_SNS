@@ -16,7 +16,11 @@ module.exports = () => {
         User.findOne({
                 where: {id},
                 include: [
-                    { model : Post },
+                    { 
+                        model : Post,
+                        attributes: ['id'],
+                        as: 'likePost',
+                    },
                     {
                         model: User,
                         attributes: ['id', 'nick'],
