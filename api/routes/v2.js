@@ -1,7 +1,15 @@
 const express = require('express');
 const { verifyToken, apiLimiter } = require('../middlewares');
-const { tokenTest, createToken, getMyPosts, getPostsByHashtag } = require('../controllers/v2');
+const { tokenTest, createToken, getMyPosts, getPostsByHashtag, corsWhenDomainMatches } = require('../controllers/v2');
+const cors = require('cors');
 const router = express.Router();
+
+// (req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4000');
+//     res.setHeader('Access-Control-Allow-Headers', 'content-type');
+//     next();
+// }
+router.use(corsWhenDomainMatches);
 
 // /v1/token
 router.post('/token', apiLimiter, createToken); // req.body.clientSecret

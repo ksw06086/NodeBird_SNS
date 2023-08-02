@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const { response } = require("express");
 const { Domain, User, Hashtag, Post } = require("../models");
 
@@ -85,5 +86,20 @@ exports.getPostsByHashtag = async (req, res) => {
             code: 500,
             message: '서버 에러',
         })
+    }
+}
+
+exports.corsWhenDomainMatches = async (req, res, next) => {
+    const domain = await Domain.findOne({
+        // new URL(url).host 하면 http, https 등이 떼어진 문자열이 됨
+        where: { host: new URL(req.get('origin')).host },
+    })
+    if(domain) {
+        cors({
+            origin: req.get('origin'), // 'http://localhost:4000'
+            credentials: true, // 쿠키도 같이 받아올 것이면 true해줌 하지만, true일 경우 origin은 *이 될 수 없음 대신 true를 넣어줌
+        })(req, res, next)
+    } else {
+        next();
     }
 }
