@@ -120,8 +120,8 @@ describe('GET /logout', () => {
         .expect('Location', `/`)
         .expect(302, done);
     });
-  });
-  
+});
+
 
 afterEach(() => { // n번 마다 테스트 실행 후에 1번씩 실행되는 함수
 
