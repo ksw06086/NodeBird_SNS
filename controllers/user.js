@@ -1,5 +1,6 @@
 const Post = require('../models/post');
 const User = require('../models/user');
+const { follow } = require('../services/user');
 
 exports.update = async (req, res, next) => {
     // req.user.id, req.body.nick
@@ -24,12 +25,12 @@ exports.update = async (req, res, next) => {
 
 exports.follow = async (req, res, next) => {
     // req.user.id, req.params.id
+    const result = await follow(req.user.id, req.params.id);
     try {
         const user = await User.findOne({ where: {id: req.user.id }});
-        if(user) { // user가 없을 수도 있으니까
-            await user.addFollowing(parseInt(req.params.id, 10));
+        if(result === 'ok') { // user가 없을 수도 있으니까
             res.send('success');
-        } else {
+        } else if(result === 'no user') {
             res.status(404).send('no user');
         }
     } catch (error) {
