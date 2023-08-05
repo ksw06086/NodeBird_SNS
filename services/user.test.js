@@ -29,7 +29,7 @@ describe('follow', () => {
         try {
             await follow(1, 2);
         } catch (error) {
-            expect(error).toBeCalledWith(message);
+            expect(error).toEqual(message);
         }
     });
 });

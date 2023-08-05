@@ -19,8 +19,8 @@ describe('User 요청', () => {
             Post: {},
         }
         User.associate(db);
-        expect(db.User.hasMany).toHaveBeanCalledWith(db.Post);
-        expect(db.User.belongsToMany).toHaveBeanCalledWith(2);
+        expect(db.User.hasMany).toHaveBeenCalledWith(db.Post);
+        expect(db.User.belongsToMany).toHaveBeenCalledTimes(3);
     })
 });
 

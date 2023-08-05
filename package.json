@@ -2,9 +2,9 @@
   "name": "nodebird",
   "version": "0.0.1",
   "description": "익스프레스로 만드는 SNS 서비스",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon server.js",
     "test": "jest",
     "coverage": "jest --coverage"
   },
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "jest": "^29.6.2",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   }
 }

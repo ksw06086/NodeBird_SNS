@@ -7,7 +7,7 @@ exports.join = async (req, res, next) => {
     try {
         const exUser = await User.findOne({ where: {email}});
         if(exUser) {
-            return resizeBy.redirect('/join?error=exist');
+            return res.redirect('/join?error=exist');
         }
         const hash = await bcrypt.hash(password, 12); // 비밀번호 암호화(숫자 높을수록 보안에 좋지만 느려짐)
         await User.create({

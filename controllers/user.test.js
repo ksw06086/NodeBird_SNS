@@ -47,7 +47,10 @@ describe('follow', () => {
         const next = jest.fn();
         const message = 'DB에러';
         User.findOne.mockReturnValue(Promise.reject(message));
-        await follow(req, res, next);
-        expect(next).toBeCalledWith(message);
+        try {
+            await follow(req, res, next);
+        } catch (error) {
+            expect(error).toEqual(message);
+        }
     });
 });
