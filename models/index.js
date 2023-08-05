@@ -18,7 +18,7 @@ const basename = path.basename(__filename); // index.js
 fs.readdirSync(__dirname) // models
     .filter(file => { // models 안에 있는 파일들이 읽힘
       // 숨김파일, index.js, 확장자 .js 아닌거 제외
-      return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'; 
+      return file.indexOf('.') !== 0 && !file.includes('test') && file !== basename && file.slice(-3) === '.js'; 
     })
     .forEach((file) => {
       const model = require(path.join(__dirname, file));
