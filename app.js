@@ -6,6 +6,8 @@ const session = require('express-session');
 const nunjucks = require('nunjucks'); // 풀스텍을 원한다면 리액트,뷰로
 const dotenv = require('dotenv');
 const passport = require('passport');
+const helmet = require('helmet');
+const hpp = require('hpp');
 const { sequelize } = require('./models'); // 시퀄라이즈 가져오기
 
 dotenv.config(); // process.env를 .env 파일과 연결 및 적용시켜줌
@@ -31,10 +33,21 @@ sequelize.sync({})
     })
     .catch((err) => {
         console.error(err);
-    })
+    });
 
 // dev : 자세하게 log 찍어줌 , 배포시 combined : 자세하지 않음(자세할수록 서버 용량 많이 잡아먹음)
-app.use(morgan('dev')); 
+if(process.env.NODE_ENV === 'production'){
+    app.use(helmet({ // 기본으로 두면 너무 엄격함
+        // 의미는 공식 문서
+        contentSecurityPolicy: false,
+        crossOriginEnbedderPolicy: false,
+        crossOriginResourcePolicy: false,
+    }));
+    app.use(hpp());
+    app.use(morgan('combined'));
+} else {
+    app.use(morgan('dev')); 
+}
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/img', express.static(path.join(__dirname, 'uploads'))); // 해당 실행을 /img 경로에서만 실행
 app.use(express.json()); // req.body를 ajax json 요청으로부터
