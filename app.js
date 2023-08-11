@@ -8,9 +8,17 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const helmet = require('helmet');
 const hpp = require('hpp');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
 const { sequelize } = require('./models'); // 시퀄라이즈 가져오기
 
 dotenv.config(); // process.env를 .env 파일과 연결 및 적용시켜줌
+const redisClient = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    password: process.env.REDIS_PASSWORD,
+    legacyMode: true,
+});
+redisClient.connect().catch(console.error);
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/post');
@@ -60,7 +68,8 @@ app.use(session({
     cookie: {
         httpOnly: true,  // 자바스크립트에서 접근 못하게
         secure: false,   // https 적용할 때에는 true로 바꿔야함
-    }
+    },
+    store: new RedisStore({ client: redisClient }),
 }));
 // passport는 무조건 session 아래에
 // 1. passport에서 세션쿠키를 가지고 유저아이디를 찾고 
