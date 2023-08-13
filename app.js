@@ -61,7 +61,7 @@ app.use('/img', express.static(path.join(__dirname, 'uploads'))); // 해당 실�
 app.use(express.json()); // req.body를 ajax json 요청으로부터
 app.use(express.urlencoded({ extended: false })); // req.body 폼으로부터
 app.use(cookieParser(process.env.COOKIE_SECRET)); // { connect.sid: 123456789 } 이렇게 cookieParser가 객체로 만들어줌
-app.use(session({
+const sessionOption = {
     resave: false,
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
@@ -70,7 +70,11 @@ app.use(session({
         secure: false,   // https 적용할 때에는 true로 바꿔야함
     },
     store: new RedisStore({ client: redisClient }),
-}));
+};
+if(process.env.NODE_ENV === 'production'){
+    sessionOption.proxy = true;
+}
+app.use(session(sessionOption));
 // passport는 무조건 session 아래에
 // 1. passport에서 세션쿠키를 가지고 유저아이디를 찾고 
 // 2. deserializeUser를 실행시켜 req에 user를 저장해서 가지고 다님 

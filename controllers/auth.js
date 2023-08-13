@@ -32,7 +32,7 @@ exports.login = (req, res, next) => {
             return next(authError);
         }
         if(!user) { // 로직실패
-            return res.redirect(`/login?Error=${info.message}`);
+            return res.redirect(`/?Error=${info.message}`);
         }
         return req.login(user, (loginError) => { // 로그인 성공
             if(loginError){ 
