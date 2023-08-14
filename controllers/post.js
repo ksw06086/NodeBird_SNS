@@ -4,7 +4,9 @@ const Hashtag = require('../models/hashtag');
 
 exports.afterUploadImage = (req, res) => {
     console.log(req.file);
-    res.json({ url: req.file.location });
+    const originalUrl = req.file.location;
+    const url = originalUrl.replace(/\/original\//, '/thunb/');
+    res.json({ url, originalUrl }); // 원본주소, 리사이징된 파일 주소 넘겨줌
 }
 
 exports.uploadPost = async (req, res, next) => {
