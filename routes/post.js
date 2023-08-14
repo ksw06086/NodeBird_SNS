@@ -5,6 +5,8 @@ const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 const { afterUploadImage, uploadPost, like, likeCancel } = require('../controllers/post');
+const { S3Client } = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3');
 // upload 폴더가 있는지 확인하고 없으면 만들기
 try {
     fs.readdirSync('uploads');
@@ -12,16 +14,21 @@ try {
     fs.mkdirSync('uploads');
 }
 
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    },
+    region: 'ap-northeast-2', // 지역
+});
+
 const upload = multer({
-    storage: multer.diskStorage({
-        destination(req, file, cb) {
-            cb(null, 'uploads/');
+    storage: multerS3({
+        s3,
+        bucket: 'nodebird01',
+        key(req, file, cb) {
+            cb(null, `original/${Date.now()}_${file.originalname}`);
         },
-        filename(req, file, cb) {
-            console.log(file);
-            const ext = path.extname(file.originalname); // image.png -> 이미지123132.png
-            cb(null, path.basename(file.originalname, ext) + Date.now() + ext); // 파일이름 + 날짜 + 확장자
-        }
     }),
     limits: { fileSize: 20*1024*1024 },
 });
