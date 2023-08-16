@@ -9,6 +9,6 @@ declare global { // ts 자료형들이 전역(-g)에 저장되어 있음 그래�
     }
 
     interface Error {
-        status: number;
+        status?: number;
     }
 }

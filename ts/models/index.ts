@@ -20,4 +20,4 @@ User.associate();
 Post.associate();
 Hashtag.associate();
 
-module.exports = { User, Post, Hashtag, sequelize };
+export { User, Post, Hashtag, sequelize };

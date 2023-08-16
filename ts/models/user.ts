@@ -1,4 +1,4 @@
-import Sequelize, { Model, CreationOptional } from 'sequelize';
+import Sequelize, { Model, CreationOptional, BelongsToManyAddAssociationMixin, BelongsToManyRemoveAssociationMixin, NonAttribute } from 'sequelize';
 import Post from './post';
 
 class User extends Model {
@@ -11,7 +11,14 @@ class User extends Model {
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
     declare deletedAt: CreationOptional<Date>; 
-
+    declare addFollowing: BelongsToManyAddAssociationMixin<User, number>;
+    declare removeFollowing: BelongsToManyRemoveAssociationMixin<User, number>;
+    declare addLikePost: BelongsToManyAddAssociationMixin<Post, number>;
+    declare removeLikePost: BelongsToManyRemoveAssociationMixin<Post, number>;
+    declare Followers: NonAttribute<User[]>;
+    declare Followings: NonAttribute<User[]>;
+    declare likePost: NonAttribute<Post[]>;
+    
     static initiate(sequelize: Sequelize.Sequelize){
         User.init({
             email: {

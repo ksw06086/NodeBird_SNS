@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
@@ -64,12 +64,14 @@ app.use((req, res, next) => { // 404 Not Found Error
     error.status = 404;
     next(error);
 });
-app.use((err, req, res, next) => {
+
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     res.locals.message = err.message;
     // 배포모드가 아니라면 에러 출력, 맞다면 에러 출력 X => 보안위함
     res.locals.error = process.env.NODE_ENV !== 'production' ? err: {}; // 에러 로그를 서비스한테 넘기고 사용자에게 보여주진 않음
     res.status(err.status || 500);
     res.render('error');
-});
+}
+app.use(errorHandler);
 
 export default app;

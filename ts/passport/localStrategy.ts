@@ -1,10 +1,10 @@
 import passport from 'passport';
-import { Strategy as localStrategy } from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
 import User from '../models/user';
 
 export default () => {
-    passport.use(new localStrategy({
+    passport.use(new LocalStrategy({
         usernameField: 'email', // req.body.email
         passwordField: 'password', // req.body.password
         passReqToCallback: false,  // true : 다음 함수가 (req, email, password, done), false : 다음 함수가 (email, password, done)
@@ -27,4 +27,4 @@ export default () => {
             done(error);
         }
     }));
-}
+};

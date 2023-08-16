@@ -1,40 +1,37 @@
-const express = require('express');
-const router = express.Router();
-const { isLoggedIn, isNotLoggedIn } = require('../middlewares');
-const fs = require('fs');
-const multer = require('multer');
-const path = require('path');
-const { afterUploadImage, uploadPost, like, likeCancel } = require('../controllers/post');
-const { S3Client } = require('@aws-sdk/client-s3');
-const multerS3 = require('multer-s3');
-// upload 폴더가 있는지 확인하고 없으면 만들기
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const multer_1 = __importDefault(require("multer"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+const post_1 = require("../controllers/post");
+const middlewares_1 = require("../middlewares");
+const router = express_1.default.Router();
 try {
-    fs.readdirSync('uploads');
-} catch (err) {
-    fs.mkdirSync('uploads');
+    fs_1.default.readdirSync('uploads');
 }
-
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY_ID,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-    },
-    region: 'ap-northeast-2', // 지역
-});
-
-const upload = multer({
-    storage: multerS3({
-        s3,
-        bucket: 'nodebird01',
-        key(req, file, cb) {
-            cb(null, `original/${Date.now()}_${file.originalname}`);
+catch (error) {
+    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+    fs_1.default.mkdirSync('uploads');
+}
+const upload = (0, multer_1.default)({
+    storage: multer_1.default.diskStorage({
+        destination(req, file, cb) {
+            cb(null, 'uploads/');
+        },
+        filename(req, file, cb) {
+            const ext = path_1.default.extname(file.originalname);
+            cb(null, path_1.default.basename(file.originalname, ext) + Date.now() + ext);
         },
     }),
-    limits: { fileSize: 20*1024*1024 },
+    limits: { fileSize: 5 * 1024 * 1024 },
 });
-router.post('/img', isLoggedIn, upload.single('img'), afterUploadImage);
-
-const upload2 = multer();
-router.post('/', isLoggedIn, upload2.none(), uploadPost);
-
-module.exports = router;
+// POST /post/img
+router.post('/img', middlewares_1.isLoggedIn, upload.single('img'), post_1.afterUploadImage);
+// POST /post
+const upload2 = (0, multer_1.default)();
+router.post('/', middlewares_1.isLoggedIn, upload2.none(), post_1.uploadPost);
+exports.default = router;

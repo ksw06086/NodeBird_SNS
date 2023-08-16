@@ -1,4 +1,4 @@
-import Sequelize, { Model, CreationOptional } from 'sequelize';
+import Sequelize, { Model, CreationOptional, BelongsToManyAddAssociationsMixin } from 'sequelize';
 import Hashtag from './hashtag';
 import User from './user';
 
@@ -8,6 +8,9 @@ class Post extends Model {
     declare img: string;
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
+    
+    declare addHashtags: BelongsToManyAddAssociationsMixin<Hashtag, number>;
+    
     static initiate(sequelize: Sequelize.Sequelize) {
         Post.init({
             content: {
