@@ -1,10 +1,40 @@
-const Sequelize = require('sequelize');
-
-class Hashtag extends Sequelize.Model {
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_1 = __importStar(require("sequelize"));
+const post_1 = __importDefault(require("./post"));
+// title, timestamps(createdAt, updatedAt), id 
+// => 생성되는 것들을 타입스크립트에게 알려주려면 따로 적어주어야 함
+class Hashtag extends sequelize_1.Model {
     static initiate(sequelize) {
         Hashtag.init({
             title: {
-                type: Sequelize.STRING(15),
+                type: sequelize_1.default.STRING(15),
                 allowNull: false,
                 unique: true,
             }
@@ -19,11 +49,9 @@ class Hashtag extends Sequelize.Model {
             collate: 'utf8mb4_general_ci',
         });
     }
-
-    static associate(db) {
-        db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag' });
+    static associate() {
+        Hashtag.belongsToMany(post_1.default, { through: 'PostHashtag' });
         // PostHashtag 접근시 : db.sequelize.models.PostHashtag로 접근
     }
 }
-
-module.exports = Hashtag;
+exports.default = Hashtag;

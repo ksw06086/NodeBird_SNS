@@ -1,61 +1,87 @@
-const Sequelize = require('sequelize');
-
-class User extends Sequelize.Model {
-    static initiate(sequelize){
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_1 = __importStar(require("sequelize"));
+const post_1 = __importDefault(require("./post"));
+class User extends sequelize_1.Model {
+    static initiate(sequelize) {
         User.init({
             email: {
-                type: Sequelize.STRING(40),
+                type: sequelize_1.default.STRING(40),
                 allowNull: true,
                 unique: true,
             },
             nick: {
-                type: Sequelize.STRING(15),
+                type: sequelize_1.default.STRING(15),
                 allowNull: false,
             },
             password: {
-                type: Sequelize.STRING(100),
+                type: sequelize_1.default.STRING(100),
                 allowNull: true,
             },
-            provider: { // ENUM : 제한을 두는 것 'local', 'kakao' 둘 중 하나만 넣을 수 있음
-                type: Sequelize.ENUM('local', 'kakao'),
+            provider: {
+                type: sequelize_1.default.ENUM('local', 'kakao'),
                 allowNull: false,
                 defaultValue: 'local',
             },
             snsId: {
-                type: Sequelize.STRING(30),
+                type: sequelize_1.default.STRING(30),
                 allowNull: true,
             }
         }, {
             // validation : 저장하기 전 검사(이 컬럼, 저 컬럼 둘 중 하나는 값이 있는지)
             sequelize,
-            timestamps: true, // createdAt, updatedAt
+            timestamps: true,
             underscored: false,
             modelName: 'User',
             tableName: 'users',
-            paranoid: true, // deletedAt 유저 삭제일
+            paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
         });
     }
-
-    static associate(db) {
-        db.User.hasMany(db.Post);
-        db.User.belongsToMany(db.Post, { 
-            foreignKeys: 'likePostId',
+    static associate() {
+        User.hasMany(post_1.default);
+        User.belongsToMany(post_1.default, {
+            foreignKey: 'likePostId',
             as: 'likePost',
-            through: 'PostLike' 
+            through: 'PostLike'
         });
-        db.User.belongsToMany(db.User, { // 팔로워 : 나를 팔로잉하고 있는 사람 찾기
+        User.belongsToMany(User, {
             foreignKey: 'followingId',
             as: 'Followers',
             through: 'Follow'
-        })
-        db.User.belongsToMany(db.User, { // 팔로잉 : 내가 팔로잉하고 있는 사람 찾기
+        });
+        User.belongsToMany(User, {
             foreignKey: 'followerId',
             as: 'Followings',
             through: 'Follow'
         });
     }
 }
-
-module.exports = User;
+exports.default = User;

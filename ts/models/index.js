@@ -1,38 +1,22 @@
-const Sequelize = require('sequelize');
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_1 = __importDefault(require("sequelize"));
 // initiate, associate 까먹음 방지 위한 자동화(모델안의 모든 모델을 읽어서 해줌)
-const fs = require('fs');
-const path = require('path');
-
+const config_1 = __importDefault(require("../config/config"));
+const user_1 = __importDefault(require("./user"));
+const post_1 = __importDefault(require("./post"));
+const hashtag_1 = __importDefault(require("./hashtag"));
 // DB와 연결
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config')[env];
-const db = {};
-const sequelize = new Sequelize(
-  config.database, config.username, config.password, config,
-);
-db.sequelize = sequelize;
-
-// process.cwd() : C:~지금폴더까지의 절대경로
-// path.basename : 마지막 폴더명|파일명 빼내기
-const basename = path.basename(__filename); // index.js
-fs.readdirSync(__dirname) // models
-    .filter(file => { // models 안에 있는 파일들이 읽힘
-      // 숨김파일, index.js, 확장자 .js 아닌거 제외
-      return file.indexOf('.') !== 0 && !file.includes('test') && file !== basename && file.slice(-3) === '.js'; 
-    })
-    .forEach((file) => {
-      const model = require(path.join(__dirname, file));
-      console.log(model);
-      console.log(file, model.name); // 클래스 네임이 뜸
-      db[model.name] = model;
-      model.initiate(sequelize);
-    });
-
-Object.keys(db).forEach(modelName => {
-  console.log(db, modelName);
-  if(db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-module.exports = db;
+const config = config_1.default[env];
+const sequelize = new sequelize_1.default.Sequelize(config.database, config.username, config.password, config);
+user_1.default.initiate(sequelize);
+post_1.default.initiate(sequelize);
+hashtag_1.default.initiate(sequelize);
+user_1.default.associate();
+post_1.default.associate();
+hashtag_1.default.associate();
+module.exports = { User: user_1.default, Post: post_1.default, Hashtag: hashtag_1.default, sequelize };
