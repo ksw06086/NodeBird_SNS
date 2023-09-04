@@ -1,2 +1,6 @@
 # NodeBird_SNS
-node.js로 만든 SNS 서비스 Repository
+Front는 Nunjucks Template, Back-end는 Node.js/Express 기반의 SNS 프로젝트입니다.
+## Using Language
+* JavaScript, TypeScript, HTML, CSS
+## Using Authentication Library
+* Passport
